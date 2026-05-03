@@ -329,7 +329,7 @@ export default function BookTicket() {
                 userLocation={userLocation}
                 metroStations={nearbyMetroStations}
                 showMetroStations={transportType === 'metro'}
-                height={transportType === 'metro' ? 'clamp(360px, 50vh, 560px)' : 'clamp(340px, 45vh, 500px)'}
+                height="100%"
               />
             </Paper>
           )}
