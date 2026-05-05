@@ -39,7 +39,7 @@ export default function BookTicket() {
 
   const [isSourceSelectedFromSuggestion, setIsSourceSelectedFromSuggestion] = useState(false);
   const [isDestinationSelectedFromSuggestion, setIsDestinationSelectedFromSuggestion] = useState(false);
-  const [metroLocationMessage, setMetroLocationMessage] = useState('');
+
   const [isResolvingMetroLocation, setIsResolvingMetroLocation] = useState(false);
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
   const [nearbyMetroStations, setNearbyMetroStations] = useState<MetroStationMarker[]>([]);
