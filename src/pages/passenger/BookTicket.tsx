@@ -70,7 +70,7 @@ export default function BookTicket() {
         price = 20; // fallback
       }
       expiryTime = new Date(Date.now() + 60 * 60 * 1000).toLocaleString();
-      status = 'UNUSED';
+      status = 'active';
     } else {
       const distance = Math.floor(Math.random() * 20) + 1;
       price = distance * (type?.pricePerKm || 0);
@@ -214,14 +214,7 @@ export default function BookTicket() {
                 <TextField {...params} label={transportType === 'metro' ? "Source Station" : "Source"} fullWidth margin="normal" />
               )}
             />
-            {transportType === 'metro' && metroLocationMessage ? (
-              <Typography
-                variant="body2"
-                sx={{ mt: 1, color: metroLocationMessage.startsWith('Nearest') ? 'success.main' : 'warning.main' }}
-              >
-                {metroLocationMessage}
-              </Typography>
-            ) : null}
+
             <Autocomplete
               key="destination"
               options={metroStations}

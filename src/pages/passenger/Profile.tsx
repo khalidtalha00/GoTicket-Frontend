@@ -45,30 +45,45 @@ const Profile: React.FC = () => {
     setImageUrl('');
   };
 
+  const [uploading, setUploading] = useState(false);
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // 5 MB limit
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File too large. Please choose an image under 5 MB.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
 
+    setUploading(true);
     try {
       const response = await fetch(buildApiUrl('/api/upload'), {
         method: 'POST',
         body: formData,
       });
 
-      if (response.ok) {
-        const filePath = await response.json();
-        await updateUser({ profilePicture: filePath });
-        setOpen(false);
-      } else {
-        console.error('Upload failed');
-        alert('Failed to upload image');
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error('Upload failed:', errText);
+        alert('Failed to upload image. Please try again.');
+        return;
       }
+
+      const filePath = await response.json();
+      await updateUser({ profilePicture: filePath });
+      setOpen(false);
     } catch (error) {
       console.error('Error uploading file:', error);
-      alert('Error uploading file');
+      alert('Error uploading file. Check your connection and try again.');
+    } finally {
+      setUploading(false);
+      // Reset so the same file can be re-selected if needed
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -145,9 +160,10 @@ const Profile: React.FC = () => {
               startIcon={<CloudUploadIcon />}
               onClick={() => fileInputRef.current?.click()}
               fullWidth
+              disabled={uploading}
               sx={{ mb: 2, py: 1.5 }}
             >
-              Upload from Gallery
+              {uploading ? 'Uploading...' : 'Upload from Gallery'}
             </Button>
             <input
               type="file"
