@@ -103,12 +103,10 @@ export default function BookTicket() {
 
   const requestNearestMetroStation = useCallback(() => {
     if (!navigator.geolocation) {
-      setMetroLocationMessage('Geolocation is not supported on this browser.');
       return;
     }
 
     setIsResolvingMetroLocation(true);
-    setMetroLocationMessage('Fetching your location...');
     setNearbyMetroStations([]);
 
     navigator.geolocation.getCurrentPosition(
@@ -125,7 +123,6 @@ export default function BookTicket() {
           const data = await response.json();
 
           if (!response.ok || data.status !== 200 || !Array.isArray(data.stations) || data.stations.length === 0) {
-            setMetroLocationMessage('Could not find a nearby metro station. Please choose manually.');
             return;
           }
 
@@ -133,17 +130,14 @@ export default function BookTicket() {
           setNearbyMetroStations(stations);
           setSource(stations[0].stationName);
           setIsSourceSelectedFromSuggestion(true);
-          setMetroLocationMessage(`Showing ${stations.length} nearest metro stations on map.`);
         } catch (error) {
           console.error('Failed to fetch nearest metro station:', error);
-          setMetroLocationMessage('Unable to fetch nearest station right now. Please choose manually.');
         } finally {
           setIsResolvingMetroLocation(false);
         }
       },
       (error) => {
         console.error('Location permission denied or unavailable:', error);
-        setMetroLocationMessage('Location permission denied. Please select source station manually.');
         setIsResolvingMetroLocation(false);
       },
       { enableHighAccuracy: true, timeout: 10000 }
@@ -187,7 +181,6 @@ export default function BookTicket() {
                 setDestination('');
                 setIsSourceSelectedFromSuggestion(false);
                 setIsDestinationSelectedFromSuggestion(false);
-                setMetroLocationMessage('');
                 setNearbyMetroStations([]);
                 if (nextTransportType === 'metro') {
                   requestNearestMetroStation();
